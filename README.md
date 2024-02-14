@@ -26,6 +26,14 @@ Para ejecutar las pruebas unitarias, ejecutar el comando:
 ng test
 ```
 
+## Coverage
+
+Para ejecutar las pruebas unitarias y obtener el coverage, ejecutar el comando:
+
+```bash
+ng test --no-watch --code-coverage
+```
+
 ## Matchers
 
 Los matchers son funciones que se utilizan para evaluar el resultado de una prueba. Algunos de los matchers más comunes son:
