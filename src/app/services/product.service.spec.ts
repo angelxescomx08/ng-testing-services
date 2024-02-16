@@ -115,4 +115,43 @@ describe('ProductsService', () => {
       expect(resquestTest.request.method).toBe('POST');
     });
   });
+
+  describe('update', () => {
+    it('should return observable product', (doneFn) => {
+      const id = '1';
+      const dto: CreateProductDTO = {
+        categoryId: 1,
+        description: '',
+        images: [],
+        price: 120,
+        title: 'title',
+        taxes: 19,
+      };
+      const mockProduct = generateOneProduct();
+      productsService.update(id, dto).subscribe((product) => {
+        expect(product).toEqual(mockProduct);
+        doneFn();
+      });
+      const url = `${environment.API_URL}/api/v1/products/${id}`;
+      const resquestTest = controller.expectOne(url);
+      resquestTest.flush(mockProduct);
+      expect(resquestTest.request.body).toEqual(dto);
+      expect(resquestTest.request.method).toBe('PUT');
+    });
+  });
+
+  describe('delete', () => {
+    it('should return observable boolean', (doneFn) => {
+      const id = '1';
+      const mockBoolean = false;
+      productsService.delete(id).subscribe((result) => {
+        expect(result).toEqual(mockBoolean);
+        doneFn();
+      });
+      const url = `${environment.API_URL}/api/v1/products/${id}`;
+      const resquestTest = controller.expectOne(url);
+      resquestTest.flush(mockBoolean);
+      expect(resquestTest.request.method).toBe('DELETE');
+    });
+  });
 });
