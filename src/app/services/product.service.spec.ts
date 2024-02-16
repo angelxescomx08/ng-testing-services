@@ -68,5 +68,23 @@ describe('ProductsService', () => {
       testRequest.flush(productsMock);
       controller.verify();
     });
+
+    it('should have limit and offset', (doneFn) => {
+      const limit = 3;
+      const offset = 2;
+      const productsMock: Product[] = generateManyProducts(10);
+      productsService.getAll(limit, offset).subscribe((products) => {
+        expect(products.length).toBe(productsMock.length);
+        doneFn();
+      });
+
+      const url = `${environment.API_URL}/api/v1/products?limit=${limit}&offset=${offset}`;
+      const testRequest = controller.expectOne(url);
+      testRequest.flush(productsMock);
+      const params = testRequest.request.params;
+      expect(params.get('limit')).toBe(`${limit}`);
+      expect(params.get('offset')).toBe(`${offset}`);
+      controller.verify();
+    });
   });
 });
