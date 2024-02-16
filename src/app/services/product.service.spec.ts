@@ -5,8 +5,11 @@ import {
   HttpTestingController,
 } from '@angular/common/http/testing';
 import { environment } from '../../environments/environment';
-import { Product } from '../models/product.model';
-import { generateManyProducts } from '../models/product.mock';
+import { CreateProductDTO, Product } from '../models/product.model';
+import {
+  generateManyProducts,
+  generateOneProduct,
+} from '../models/product.mock';
 
 describe('ProductsService', () => {
   let productsService: ProductsService;
@@ -18,6 +21,12 @@ describe('ProductsService', () => {
     });
     productsService = TestBed.inject(ProductsService);
     controller = TestBed.inject(HttpTestingController);
+  });
+
+  afterEach(() => {
+    //verificar que no quede ninguna request pendiente y que la peticiones
+    //esten correctas
+    controller.verify();
   });
 
   it('should be created', () => {
@@ -34,7 +43,6 @@ describe('ProductsService', () => {
       const url = `${environment.API_URL}/api/v1/products`;
       const testRequest = controller.expectOne(url);
       testRequest.flush(productsMock);
-      controller.verify();
     });
   });
 
@@ -48,7 +56,6 @@ describe('ProductsService', () => {
       const url = `${environment.API_URL}/api/v1/products`;
       const testRequest = controller.expectOne(url);
       testRequest.flush(productsMock);
-      controller.verify();
     });
 
     it('should return taxes', (doneFn) => {
@@ -66,7 +73,6 @@ describe('ProductsService', () => {
       const url = `${environment.API_URL}/api/v1/products`;
       const testRequest = controller.expectOne(url);
       testRequest.flush(productsMock);
-      controller.verify();
     });
 
     it('should have limit and offset', (doneFn) => {
@@ -84,7 +90,29 @@ describe('ProductsService', () => {
       const params = testRequest.request.params;
       expect(params.get('limit')).toBe(`${limit}`);
       expect(params.get('offset')).toBe(`${offset}`);
-      controller.verify();
+    });
+  });
+
+  describe('create', () => {
+    it('should return observable product', (doneFn) => {
+      const dto: CreateProductDTO = {
+        categoryId: 1,
+        description: '',
+        images: [],
+        price: 120,
+        title: 'title',
+        taxes: 19,
+      };
+      const mockProduct = generateOneProduct();
+      productsService.create(dto).subscribe((product) => {
+        expect(product).toEqual(mockProduct);
+        doneFn();
+      });
+      const url = `${environment.API_URL}/api/v1/products`;
+      const resquestTest = controller.expectOne(url);
+      resquestTest.flush(mockProduct);
+      expect(resquestTest.request.body).toEqual(dto);
+      expect(resquestTest.request.method).toBe('POST');
     });
   });
 });
