@@ -4,6 +4,7 @@ import { PersonComponent } from './person.component';
 import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { Person } from '../../models/person.model';
+import { firstValueFrom } from 'rxjs';
 
 describe('PersonComponent', () => {
   let component: PersonComponent;
@@ -65,5 +66,23 @@ describe('PersonComponent', () => {
 
     //Assert
     expect(button.textContent).toContain(expectedMsg);
+  });
+
+  it('should emmit person', (doneFn) => {
+    const expetedPerson = new Person('Juan', 'Perez', 30, 120, 1.65);
+    component.person = expetedPerson;
+    const buttonDebug: DebugElement = fixture.debugElement.query(
+      By.css('.btn-select')
+    );
+    let person: Person | undefined;
+
+    component.onSelectedPerson.subscribe((personResult) => {
+      person = personResult;
+      expect(person).toEqual(expetedPerson);
+      doneFn();
+    });
+
+    buttonDebug.triggerEventHandler('click');
+    fixture.detectChanges();
   });
 });
