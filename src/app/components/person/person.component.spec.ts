@@ -49,4 +49,21 @@ describe('PersonComponent', () => {
     fixture.detectChanges();
     expect(h3Element?.textContent).toContain(component.person.name);
   });
+
+  it('should display text when clicks on button', () => {
+    // Arrange
+    const expectedMsg = 'overweigth level 3';
+    component.person = new Person('Juan', 'Perez', 30, 120, 1.65);
+    const buttonDebug: DebugElement = fixture.debugElement.query(
+      By.css('.btn-imc')
+    );
+    const button: HTMLButtonElement = buttonDebug.nativeElement;
+
+    //Act
+    buttonDebug.triggerEventHandler('click');
+    fixture.detectChanges();
+
+    //Assert
+    expect(button.textContent).toContain(expectedMsg);
+  });
 });

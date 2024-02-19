@@ -9,5 +9,10 @@ import { Person } from '../../models/person.model';
   styleUrl: './person.component.scss',
 })
 export class PersonComponent {
-  @Input() person!: Person;
+  @Input() person: Person = new Person('', '', 0, 0, 0);
+  public imc = '';
+
+  calcIMC() {
+    this.imc = this.person.calcIMC();
+  }
 }
