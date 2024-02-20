@@ -9,7 +9,6 @@ import { Product } from '../../models/product.model';
 })
 export class ProductComponent implements OnInit {
   @Input() product!: Product;
-  public products: Product[] = [];
 
   constructor() {}
 

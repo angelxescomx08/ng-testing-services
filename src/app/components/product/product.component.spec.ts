@@ -8,12 +8,22 @@ describe('ProductComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ProductComponent]
-    })
-    .compileComponents();
-    
+      imports: [ProductComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(ProductComponent);
     component = fixture.componentInstance;
+    component.product = {
+      category: {
+        id: 1,
+        name: 'category',
+      },
+      description: 'lorem',
+      id: '1',
+      images: ['https://img.jpg'],
+      price: 150,
+      title: '',
+    };
     fixture.detectChanges();
   });
 
