@@ -5,6 +5,7 @@ import { ProductComponent } from '../product/product.component';
 import { ProductsService } from '../../services/product.service';
 import { generateManyProducts } from '../../models/product.mock';
 import { of } from 'rxjs';
+import { By } from '@angular/platform-browser';
 
 describe('ProductsComponent', () => {
   let component: ProductsComponent;
@@ -33,5 +34,26 @@ describe('ProductsComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('test for getAllProducts()', () => {
+    it('should return product list from service', () => {
+      // Arrange
+      const productsMock = generateManyProducts(10);
+      productsService.getAll.and.returnValue(of(productsMock));
+      const countPrev = component.products.length;
+      // Act
+      component.getAllProducts();
+      const expectedImg = fixture.debugElement.query(By.css('app-product img'));
+      fixture.detectChanges();
+      // Assert
+
+      expect(component.products.length).toEqual(
+        productsMock.length + countPrev
+      );
+      expect(component.products[0].images[0]).toEqual(
+        expectedImg.nativeElement.src
+      );
+    });
   });
 });

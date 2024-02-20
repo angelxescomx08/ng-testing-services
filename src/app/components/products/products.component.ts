@@ -12,17 +12,25 @@ import { CommonModule } from '@angular/common';
   styleUrl: './products.component.scss',
 })
 export class ProductsComponent implements OnInit {
-  public products: Product[] = [];
+  products: Product[] = [];
+  limit = 10;
+  offset = 0;
+  status: 'loading' | 'success' | 'error' | 'init' = 'init';
 
   constructor(private productsService: ProductsService) {}
 
   ngOnInit(): void {
-    this.getProducts();
+    this.getAllProducts();
   }
 
-  getProducts() {
-    this.productsService.getAll().subscribe((products) => {
-      this.products = products;
-    });
+  getAllProducts() {
+    this.status = 'loading';
+    this.productsService
+      .getAll(this.limit, this.offset)
+      .subscribe((products) => {
+        this.products = [...this.products, ...products];
+        this.offset += this.limit;
+        this.status = 'success';
+      });
   }
 }
