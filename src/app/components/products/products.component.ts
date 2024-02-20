@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Product } from '../../models/product.model';
 import { ProductsService } from '../../services/product.service';
+import { ProductComponent } from '../product/product.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-products',
   standalone: true,
-  imports: [],
+  imports: [ProductComponent, CommonModule],
   templateUrl: './products.component.html',
   styleUrl: './products.component.scss',
 })
@@ -19,7 +21,7 @@ export class ProductsComponent implements OnInit {
   }
 
   getProducts() {
-    this.productsService.getAllSimple().subscribe((products) => {
+    this.productsService.getAll().subscribe((products) => {
       this.products = products;
     });
   }
