@@ -3,16 +3,20 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
 import { HighligthDirective } from './highligth.directive';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   template: ` <h5 class="title" highligth>Hay un valor default</h5>
     <h5 highligth="yellow">Hay un valor</h5>
     <p highligth="blue">parrafo</p>
-    <p>otro parrafo</p>`,
-  imports: [HighligthDirective],
+    <p>otro parrafo</p>
+    <input [(ngModel)]="color" [highligth]="color" />`,
+  imports: [HighligthDirective, FormsModule],
   standalone: true,
 })
-class HostComponent {}
+class HostComponent {
+  color = 'pink';
+}
 
 describe('HighligthDirective', () => {
   let component: HostComponent;
@@ -20,7 +24,7 @@ describe('HighligthDirective', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HighligthDirective, HostComponent],
+      imports: [HighligthDirective, HostComponent, FormsModule],
     }).compileComponents();
   });
 
@@ -42,8 +46,8 @@ describe('HighligthDirective', () => {
     const elementsWithout = fixture.debugElement.queryAll(
       By.css('*:not([highligth])')
     );
-    expect(elements.length).toBe(3);
-    expect(elementsWithout.length).toBe(1);
+    expect(elements.length).toBe(4);
+    expect(elementsWithout.length).toBe(2);
   });
 
   it('should the elements be match with bgColor', () => {
@@ -64,5 +68,19 @@ describe('HighligthDirective', () => {
     expect(titleDe.nativeElement.style.backgroundColor).toEqual(
       dir.defaultColor
     );
+  });
+
+  it('should bind <input> and change the bgColor', () => {
+    // Arrange
+    const inputDe = fixture.debugElement.query(By.css('input'));
+    const inputEl: HTMLInputElement = inputDe.nativeElement;
+    // Act
+    // Assert
+    expect(inputEl.style.backgroundColor).toEqual('pink');
+    inputEl.value = 'red';
+    inputEl.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    expect(inputEl.style.backgroundColor).toEqual('red');
+    expect(component.color).toEqual('red');
   });
 });
