@@ -124,6 +124,26 @@ describe('ProductsComponent', () => {
         expect(component.rta).toEqual(mockMsg);
         expect(valueService.getPromiseValue).toHaveBeenCalled();
       });
+
+      it('should show "my mock string" in <p> when btn was clicked', fakeAsync(() => {
+        // Arrange
+        const mockMsg = 'my mock string';
+        valueService.getPromiseValue.and.returnValue(Promise.resolve(mockMsg));
+        const btnDe = fixture.debugElement.query(By.css('.btn-promise'));
+
+        // Act
+        btnDe.triggerEventHandler('click');
+        //como el click ejecuta un metodo asincrono, se debe esperar en este
+        //caso no se puede usar el await porque no llamamos directamente a
+        //la promesa
+        tick();
+        fixture.detectChanges();
+        const rtaDe = fixture.debugElement.query(By.css('p.rta'));
+        // Assert
+        expect(component.rta).toEqual(mockMsg);
+        expect(valueService.getPromiseValue).toHaveBeenCalled();
+        expect(rtaDe.nativeElement.textContent).toEqual(mockMsg);
+      }));
     });
   });
 });
